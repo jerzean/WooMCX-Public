@@ -59,6 +59,7 @@ Unfortunately, due to a certain person we are not accepting any contributions, a
 
 ## Having Issues?
 [Discord](https://discord.com/invite/7dtnsGp9ZQ)
+
 [Open a GitHub Ticket](https://github.com/jerzean/WooMCX-Public/issues/new/choose)
 
 
