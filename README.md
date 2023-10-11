@@ -7,8 +7,16 @@ WordPress side of things, we allow you to specify commands for product variation
 ## Config
 Your config should look like the below section.
 ```
+ConfigVersion: 1.0.2
+
+#+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+#                                            general settings
+#+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+#enable or disable the update checker
+UpdateCheck: true
+Disable-if-not-updated: true
+
 # Set this to the desired language file you wish to load.
-#
 # If your l10n is not available but one is that you know how to speak,consider
 # contributing to this plugin at https://github.com/WooMinecraft/WooMinecraft/
 lang: "en"
@@ -17,25 +25,30 @@ lang: "en"
 # to see if there are donations that need made.
 update_interval: 1500
 
-# This must match the WordPress key in your admin panel for WooMinecraft
-# This is a key that YOU set, both needing to be identical in the admin panel
-# and in this config file
-# For security purposes, you MUST NOT leave this empty.
-key: ""
-
 # Allowed worlds the player needs to be in to run the commands.
 # Disabled by default!
-#whitelist-worlds:
+whitelist-worlds:
 #  - world
 
 # Set to true in order to toggle debug information
 debug: false
 
-#MySQL Iinfo
+#this can be in a single string or list format, and will run these commands once per order(chargeback)
+#it uses the same user variable as the Website
+#example: "ban %s" will ban the user who chargedback
+#this dosent work for RestAPI Mode
+Chargeback-commands: ""
+
+
+#+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+#                                            Connection settings
+#+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 SQL:
-  #Do Not Change Type
+#Types: MYSQL, RESTAPI
   Type: "MYSQL"
-  #rest of these details need to be the same as your wordpress setup, unless you are using restapi
+  #The rest of these details need to be the same as your wordpress DB setup
+  #if you run into a issue of it not being able to connect to your WP database, and your details are correct, use another DB host for your wordpress site
+  #all public MC hosting normally comes with a free mysql DB, use that one for testing
   TablePrefix: "wp_"
   MySQL:
     Host: "localhost"
@@ -43,6 +56,100 @@ SQL:
     Database: "database"
     Username: "username"
     Password: "password"
+    #Besure to set the Key section below to the same key you set in the admin panel of your website
+    #Mysql Mode Needs its aswell
+  RestAPI:
+    # You must set this to your WordPress site URL.  If you installed WordPress in a
+    # subdirectory, it should point there.
+    URL: "http://playground.dev"
+    # If you are having issues with REST, or have disabled pretty permalinks. Set this to false.
+    # Doing so will use the old /index.php?rest_route=/wmc/v1/server/ base
+    # Setting this to false will also allow you to set the restBasePath value if you have altered your
+    # installation in any way.
+    prettyPermalinks: true
+    # If your REST API has a custom path base, input it here.
+    # NOTE: This is only loaded if prettyPermalinks is set to false.
+    # Known good URL bases.
+    # - /wp-json/wmc/v1/server/
+    # - /index.php?rest_route=/wmc/v1/server/
+    restBasePath: ""
+    # This must match the WordPress key in your admin panel for WooMinecraft
+    # This is a key that YOU set, both needing to be identical in the admin panel
+    # and in this config file
+    # For security purposes, you MUST NOT leave this empty even if you are using MySQL
+    key: ""
+#+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+#                                            GUI settings
+#+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+GUI:
+  #Set to true to enable GUI
+  Enabled: true
+  #Gui Title
+  Title: "&c&lTest"
+  #Gui Size
+  #Gui sizes: 9, 18, 27, 36, 45, 54
+  Size: 9
+  items: #you can add more items
+    1:
+      #Item ID
+      id: "STONE"
+      #Item Name
+      name: "&c&lTest"
+      #Item Lore
+      lore: #add your item description here
+        - "&c&lTest"
+        - "&c&lTest"
+      #Item Amount
+      amount: 1
+      #Item Slot
+      slot: 1
+      #Item Link
+      #this is a direct link to the item on your website
+      link: "https://google.com1"
+      #Item Enchantments
+      enchantment:
+        enabled: true
+    2:
+      id: "STONE"
+      name: "&c&lTest"
+      lore:
+        - "&c&lTest"
+        - "&c&lTest"
+      amount: 1
+      slot: 2
+      link: "https://google.com2"
+      enchantment:
+        enabled: true
+    3:
+      id: "STONE"
+      name: "&c&lTest"
+      lore:
+        - "&c&lTest"
+        - "&c&lTest"
+      amount: 1
+      slot: 3
+      link: "https://google.com3"
+      enchantment:
+        enabled: true
+#you can add more items here
+
+#+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+#                                      Bungecord settings
+#+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+# Set this to true if you are using BungeeCord and have mysql mode enabled
+# "false" - This is for a direct install on a single server, and will only send commands to itself. (default)
+#note: the default mode works with BungeeCord as well but only supports orders with 1 server in them
+#example: if you have 2 servers linked to a single item/order, and a player buys a item/rank on your website, it will only give the rank/item to the server the player is on, skipping the other server
+Bungee: false
+
+# "true" - This will make this server the host server, and will send the commands to the other servers connected to it.(all other servers need to be set to false)
+# "false" - This will make this server a slave server, and will only accept commands from the host server on the bungeecord proxy.
+
+Bungee-Host: false
+
+#+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
 ```
 
 ## How does it work?
